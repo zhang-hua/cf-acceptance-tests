@@ -21,15 +21,17 @@ import (
 )
 
 var _ = Describe("An application that's already been pushed", func() {
-	BeforeEach(func() {
-		AppName = IntegrationConfig.PersistentAppHost
+	var appName string
 
-		Expect(Cf("app", AppName)).To(SayBranches(
+	BeforeEach(func() {
+		appName = IntegrationConfig.PersistentAppHost
+
+		Expect(Cf("app", appName)).To(SayBranches(
 			cmdtest.ExpectBranch{
 				"not found",
 				func() {
 					Expect(
-						Cf("push", AppName, "-p", doraPath),
+						Cf("push", appName, "-p", doraPath),
 					).To(Say("App started"))
 				},
 			},
@@ -42,14 +44,14 @@ var _ = Describe("An application that's already been pushed", func() {
 	})
 
 	It("can be restarted and still come up", func() {
-		Eventually(Curling("/")).Should(Say("Hi, I'm Dora!"))
+		Eventually(Curling(AppUri(appName, "/"))).Should(Say("Hi, I'm Dora!"))
 
-		Expect(Cf("stop", AppName)).To(Say("OK"))
+		Expect(Cf("stop", appName)).To(Say("OK"))
 
-		Eventually(Curling("/")).Should(Say("404"))
+		Eventually(Curling(AppUri(appName, "/"))).Should(Say("404"))
 
-		Expect(Cf("start", AppName)).To(Say("App started"))
+		Expect(Cf("start", appName)).To(Say("App started"))
 
-		Eventually(Curling("/")).Should(Say("Hi, I'm Dora!"))
+		Eventually(Curling(AppUri(appName, "/"))).Should(Say("Hi, I'm Dora!"))
 	})
 })

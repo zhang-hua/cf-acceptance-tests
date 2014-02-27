@@ -10,16 +10,18 @@ import (
 )
 
 var _ = Describe("An application being staged", func() {
+	var appName string
+
 	BeforeEach(func() {
-		AppName = RandomName()
+		appName = RandomName()
 	})
 
 	AfterEach(func() {
-		Expect(Cf("delete", AppName, "-f")).To(Say("OK"))
+		Expect(Cf("delete", appName, "-f")).To(Say("OK"))
 	})
 
 	It("has its staging log streamed during a push", func() {
-		push := Cf("push", AppName, "-p", doraPath)
+		push := Cf("push", appName, "-p", doraPath)
 
 		// Expect(push).To(Say("Installing dependencies"))
 		Expect(push).To(Say("Uploading droplet"))

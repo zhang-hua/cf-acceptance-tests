@@ -21,17 +21,15 @@ func TestLifecycle(t *testing.T) {
 
 var IntegrationConfig = config.Load()
 
-var AppName = ""
-
 var doraPath = "../assets/dora"
 var helloPath = "../assets/hello-world"
 
-func AppUri(endpoint string) string {
-	return "http://" + AppName + "." + IntegrationConfig.AppsDomain + endpoint
+func AppUri(appName string, endpoint string) string {
+	return "http://" + appName + "." + IntegrationConfig.AppsDomain + endpoint
 }
 
-func Curling(endpoint string) func() *cmdtest.Session {
+func Curling(args ...string) func() *cmdtest.Session {
 	return func() *cmdtest.Session {
-		return Curl(AppUri(endpoint))
+		return Curl(args...)
 	}
 }

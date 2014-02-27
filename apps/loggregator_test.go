@@ -5,38 +5,40 @@ import (
 	. "github.com/onsi/gomega"
 	. "github.com/vito/cmdtest/matchers"
 
-    . "github.com/pivotal-cf-experimental/cf-test-helpers/generator"
-    . "github.com/pivotal-cf-experimental/cf-test-helpers/cf"
-	. "github.com/pivotal-cf-experimental/cf-acceptance-tests/helpers"
+	. "github.com/pivotal-cf-experimental/cf-test-helpers/generator"
+	. "github.com/pivotal-cf-experimental/cf-test-helpers/cf"
+	. "../helpers"
 	"time"
 )
 
 var _ = PDescribe("loggregator", func() {
-	BeforeEach(func() {
-		AppName = RandomName()
+	var appName string
 
-		PushApp(AppName, doraPath)
+	BeforeEach(func() {
+		appName = RandomName()
+
+		PushApp(appName, doraPath)
 	})
 
 	AfterEach(func() {
-		DeleteApp(AppName)
+		DeleteApp(appName)
 	})
 
 	Context("gcf logs", func() {
 		PIt("blocks and exercises basic loggregator behavior", func() {
-			logs := Cf("logs", AppName)
+			logs := Cf("logs", appName)
 
 			Expect(logs).To(SayWithTimeout("Connected, tailing logs for app", time.Second*15))
 
-			Eventually(Curling("/")).Should(Say("Hi, I'm Dora!"))
+			Eventually(Curling(AppUri(appName, "/"))).Should(Say("Hi, I'm Dora!"))
 
-			Expect(logs).To(SayWithTimeout("OUT "+AppName+"."+IntegrationConfig.AppsDomain, time.Second*15))
+			Expect(logs).To(SayWithTimeout("OUT "+appName+"."+IntegrationConfig.AppsDomain, time.Second*15))
 		})
 	})
 
 	Context("gcf logs --recent", func() {
 		It("makes loggregator buffer and dump log messages", func() {
-		   	logs := Cf("logs", AppName, "--recent")
+		   	logs := Cf("logs", appName, "--recent")
 
 			Expect(logs).To(SayWithTimeout("Connected, dumping recent logs for app", time.Second*15))
 
