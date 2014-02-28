@@ -57,7 +57,7 @@ var _ = Describe("Service Broker Lifecycle", func() {
 		defer Recover() // Catches panic thrown by Require expectations
 
 		// Adding the service broker
-		Require(Cf("create-service-broker", appName, "username", "password", AppUri(appName, ""))).To(ExitWithTimeout(0, 2*time.Second))
+		Require(Cf("create-service-broker", appName, "username", "password", AppUri(appName, ""))).To(ExitWithTimeout(0, 30*time.Second))
 		Expect(Cf("service-brokers")).To(Say(appName))
 
 		// Confirming the plans are not yet public
@@ -87,7 +87,7 @@ var _ = Describe("Service Broker Lifecycle", func() {
 
 		// Changing the catalog on the broker
 		Eventually(Curling(AppUri(appName,"/v2/catalog"), "-X", "POST", "-i")).Should(Say("HTTP/1.1 200 OK"))
-		Require(Cf("update-service-broker", appName, "username", "password", AppUri(appName, ""))).To(ExitWithTimeout(0, 2*time.Second))
+		Require(Cf("update-service-broker", appName, "username", "password", AppUri(appName, ""))).To(ExitWithTimeout(0, 30*time.Second))
 
 		// Confirming the changes to the broker show up in the marketplace
 		session = Cf("marketplace")
