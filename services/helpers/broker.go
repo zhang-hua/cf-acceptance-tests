@@ -92,7 +92,7 @@ func (b ServiceBroker) ToJSON() string {
 }
 
 func (b ServiceBroker) PublicizePlans() {
-	url := fmt.Sprintf("/v2/services?inline-relations-depth=1&q=label:%s", b.Service.Name)
+	url := "/v2/services?inline-relations-depth=1"
 	session := Cf("curl", url)
 	structure := ServicesResponse{}
 	json.Unmarshal(session.FullOutput(), &structure)
@@ -116,7 +116,7 @@ func (b ServiceBroker) PublicizePlan(url string) {
 }
 
 func (b ServiceBroker) CreateServiceInstance(instanceName string) {
-	url := fmt.Sprintf("/v2/services?inline-relations-depth=1&q=label:%s", b.Service.Name)
+	url := "/v2/services?inline-relations-depth=1"
 	session := Cf("curl", url)
 	structure := ServicesResponse{}
 	json.Unmarshal(session.FullOutput(), &structure)

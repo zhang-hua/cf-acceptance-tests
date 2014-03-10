@@ -13,7 +13,7 @@ import (
 	"github.com/pivotal-cf-experimental/cf-test-helpers/generator"
 )
 
-var _ = Describe("Purging service offerings", func() {
+var _ = PDescribe("Purging service offerings", func() {
 	var broker helpers.ServiceBroker
 
 	BeforeEach(func() {
