@@ -6,8 +6,16 @@ import (
 )
 
 type Config struct {
-	AppsDomain        string `json:"apps_domain"`
-	PersistentAppHost string `json:"persistent_app_host"`
+	ApiEndpoint				string 		`json:"api_endpoint"`
+	AdminUser					string 		`json:"cf_admin_user"`
+	AdminPassword			string 		`json:"cf_admin_password"`
+	User							string 		`json:"cf_user"`
+	Password					string 		`json:"cf_user_password"`
+	Org								string 		`json:"cf_org"`
+	Space							string 		`json:"cf_space"`
+	AppsDomain        string 		`json:"apps_domain"`
+	PersistentAppHost string 		`json:"persistent_app_host"`
+	LoginFlags				string 	`json:"login_flags"`
 }
 
 var loadedConfig *Config
