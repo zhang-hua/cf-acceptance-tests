@@ -15,5 +15,9 @@ export GOPATH=$local_gopath:$GOPATH
 export PATH=$local_gopath/bin:$PATH
 
 go install github.com/onsi/ginkgo/ginkgo
+
+( cd cats_setup && go install )
+cats_setup integration_config.json /tmp/full_config.json
+
 echo "RUNNING LOCAL CODE"
 ginkgo -r -v -slowSpecThreshold=300 "$@"

@@ -5,6 +5,15 @@ import (
 	"os"
 )
 
+type MinimalConfig struct {
+	ApiEndpoint				string 		`json:"api_endpoint"`
+	AdminUser					string 		`json:"cf_admin_user"`
+	AdminPassword			string 		`json:"cf_admin_password"`
+	AppsDomain        string 		`json:"apps_domain"`
+	PersistentAppHost string 		`json:"persistent_app_host"`
+	LoginFlags				string 		`json:"login_flags"`
+}
+
 type Config struct {
 	ApiEndpoint				string 		`json:"api_endpoint"`
 	AdminUser					string 		`json:"cf_admin_user"`
@@ -15,7 +24,7 @@ type Config struct {
 	Space							string 		`json:"cf_space"`
 	AppsDomain        string 		`json:"apps_domain"`
 	PersistentAppHost string 		`json:"persistent_app_host"`
-	LoginFlags				string 	`json:"login_flags"`
+	LoginFlags				string 		`json:"login_flags"`
 }
 
 var loadedConfig *Config
