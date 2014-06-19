@@ -36,9 +36,9 @@ func InitiateUserContext(userContext UserContext) (originalCfHomeDir, currentCfH
 		cfSetApiArgs = append(cfSetApiArgs, "--skip-ssl-validation")
 	}
 
-	Eventually(Cf(cfSetApiArgs...), 10).Should(Exit(0))
+	Expect(Cf(cfSetApiArgs...).Wait(CF_API_TIMEOUT.Seconds())).To(Exit(0))
 
-	Eventually(Cf("auth", userContext.Username, userContext.Password), 10).Should(Exit(0))
+	Expect(Cf("auth", userContext.Username, userContext.Password).Wait(CF_API_TIMEOUT.Seconds())).To(Exit(0))
 
 	return
 }

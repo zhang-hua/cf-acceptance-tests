@@ -3,10 +3,13 @@ package cf
 import (
 	"encoding/json"
 	"strings"
+	"time"
 
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gexec"
 )
+
+const CF_API_TIMEOUT = 10 * time.Second
 
 type GenericResource struct {
 	Metadata struct {
