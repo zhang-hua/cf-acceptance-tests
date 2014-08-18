@@ -20,6 +20,7 @@ func NewAssets() Assets {
 		Node:       "../assets/node",
 		Java:       "../assets/java",
 		Golang:     "../assets/golang",
+		Binary:     "../assets/binary",
 		Python:     "../assets/python",
 		LoggregatorLoadGenerator: "../assets/loggregator-load-generator",
 		ServiceBroker:            "../assets/service_broker",

@@ -16,7 +16,7 @@ var _ = Describe("Getting instance information", func() {
 	BeforeEach(func() {
 		appName = generator.RandomName()
 
-		Eventually(cf.Cf("push", appName, "-p", helpers.NewAssets().HelloWorld, "--no-start", "-b=ruby_buildpack"), CF_PUSH_TIMEOUT).Should(Exit(0))
+		Eventually(cf.Cf("push", appName, "-p", helpers.NewAssets().Binary, "-c", "/app/start", "--no-start", "-b=https://github.com/ryandotsmith/null-buildpack/archive/master.zip"), CF_PUSH_TIMEOUT).Should(Exit(0))
 		Eventually(cf.Cf("set-env", appName, "CF_DIEGO_RUN_BETA", "true"), DEFAULT_TIMEOUT).Should(Exit(0))
 
 		Eventually(cf.Cf("scale", appName, "-i", "3"), DEFAULT_TIMEOUT).Should(Exit(0))
@@ -27,7 +27,7 @@ var _ = Describe("Getting instance information", func() {
 		Eventually(cf.Cf("delete", appName, "-f"), DEFAULT_TIMEOUT).Should(Exit(0))
 	})
 
-	It("Retrieves instance information for cf app", func() {
+	FIt("Retrieves instance information for cf app", func() {
 		app := cf.Cf("app", appName).Wait(DEFAULT_TIMEOUT)
 		Expect(app).To(Exit(0))
 		Expect(app).To(Say("instances: [0-3]/3"))
