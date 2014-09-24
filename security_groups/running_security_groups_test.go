@@ -152,7 +152,7 @@ var _ = Describe("Security Groups", func() {
 		Expect(cf.Cf("push", testAppName, "-b", buildpack, "-p", assets.NewAssets().HelloWorld, "--no-start").Wait(CF_PUSH_TIMEOUT)).To(Exit(0))
 		defer func() { cf.Cf("delete", testAppName, "-f").Wait(CF_PUSH_TIMEOUT) }()
 
-		Expect(cf.Cf("set-env", testAppName, "TESTURI", "www.google.com").Wait(DEFAULT_TIMEOUT)).To(Exit(0))
+		Expect(cf.Cf("set-env", testAppName, "TESTURI", "www.example.com").Wait(DEFAULT_TIMEOUT)).To(Exit(0))
 		Expect(cf.Cf("start", testAppName).Wait(CF_PUSH_TIMEOUT)).To(Exit(1))
 		Eventually(func() *Session {
 			appLogsSession := cf.Cf("logs", "--recent", testAppName)
