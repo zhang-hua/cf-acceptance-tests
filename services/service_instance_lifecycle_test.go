@@ -127,6 +127,52 @@ var _ = Describe("Service Instance Lifecycle", func() {
 				Expect(deleteApp).To(Exit(0))
 			})
 		})
+
+		Context("service instances with service key", func() {
+			It("can create, list, retrieve and delete the service key", func() {
+				instanceName := generator.RandomName()
+				createService := cf.Cf("create-service", broker.Service.Name, broker.SyncPlans[0].Name, instanceName).Wait(DEFAULT_TIMEOUT)
+				Expect(createService).To(Exit(0), "failed creating service")
+
+				firstServiceKeyName := generator.RandomName()
+				createServiceKey := cf.Cf("create-service-key", instanceName, firstServiceKeyName).Wait(DEFAULT_TIMEOUT)
+				Expect(createServiceKey).To(Exit(0), "failed creating the first service key for service instance")
+
+				checkForEvents(firstServiceKeyName, []string{"audit.service_key.create"})
+
+				secondServiceKeyName := generator.RandomName()
+				createServiceKey = cf.Cf("create-service-key", instanceName, secondServiceKeyName).Wait(DEFAULT_TIMEOUT)
+				Expect(createServiceKey).To(Exit(0), "failed creating the second service key for service instance")
+
+				checkForEvents(secondServiceKeyName, []string{"audit.service_key.create"})
+
+				listServiceKey := cf.Cf("service-keys", instanceName).Wait(DEFAULT_TIMEOUT)
+				Expect(listServiceKey).To(Exit(0), "failed listing service keys for service instance")
+
+				listServiceKeyResult := string(listServiceKey.Out.Contents())
+				Expect(listServiceKeyResult).To(ContainSubstring(firstServiceKeyName))
+				Expect(listServiceKeyResult).To(ContainSubstring(secondServiceKeyName))
+
+				getServiceKey := cf.Cf("service-key", instanceName, firstServiceKeyName).Wait(DEFAULT_TIMEOUT)
+				Expect(getServiceKey).To(Exit(0), "failed getting first service key for service instance")
+
+				getServiceKey = cf.Cf("service-key", instanceName, secondServiceKeyName).Wait(DEFAULT_TIMEOUT)
+				Expect(getServiceKey).To(Exit(0), "failed getting second service key for service instance")
+
+				deleteServiceKey := cf.Cf("delete-service-key", instanceName, firstServiceKeyName, "-f").Wait(DEFAULT_TIMEOUT)
+				Expect(deleteServiceKey).To(Exit(0), "failed deleting first service key for service instance")
+
+				checkForEvents(firstServiceKeyName, []string{"audit.service_key.delete"})
+
+				deleteServiceKey = cf.Cf("delete-service-key", instanceName, secondServiceKeyName, "-f").Wait(DEFAULT_TIMEOUT)
+				Expect(deleteServiceKey).To(Exit(0), "failed deleting second service key for service instance")
+
+				checkForEvents(secondServiceKeyName, []string{"audit.service_key.delete"})
+
+				deleteService := cf.Cf("delete-service", instanceName, "-f").Wait(DEFAULT_TIMEOUT)
+				Expect(deleteService).To(Exit(0))
+			})
+		})
 	})
 
 	Context("Async broker", func() {
